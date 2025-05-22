@@ -1,0 +1,91 @@
+/* Basic styles for the body */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Main header (h1) styling */
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #0056b3;
+}
+
+/* User input section styling */
+#user_input {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Simulation output div styling */
+#simulation_output {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 20px;
+    min-height: 100px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for labels, select dropdowns, and buttons */
+label {
+    display: block; /* Makes the label take its own line */
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+select,
+button {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-color: #007bff;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Ensure select takes up a reasonable width */
+select {
+    width: 100%;
+    max-width: 300px; /* Adjust as needed */
+}
+
+/* Risk level display styling */
+.risk-level-display {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 10px; /* Spacing from the job title */
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white; /* Default text color for all risk spans */
+}
+
+.risk-high {
+    background-color: red;
+}
+
+.risk-medium {
+    background-color: orange;
+}
+
+.risk-low {
+    background-color: green;
+}
