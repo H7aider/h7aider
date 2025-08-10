@@ -1,30 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Impact Simulation</title>
+    <title>محاكاة مستقبل الوظائف</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>AI Impact Simulation</h1>
-    </header>
+    <div class="container">
+        <header>
+            <h1>محاكاة مستقبل الوظائف</h1>
+            <p>شاهد كيف يتغير عالمنا مع تطور الذكاء الاصطناعي</p>
+        </header>
 
-    <section id="user_input">
-        <label for="job_selection">Select a Job Category:</label>
-        <select id="job_selection">
-            <!-- Options will be populated here by JavaScript -->
-        </select>
-        <button id="run_button">Run Simulation</button>
-    </section>
+        <main id="simulation-dashboard">
+            <div class="controls">
+                <button id="start-simulation-btn">بدء المحاكاة</button>
+                <button id="advance-year-btn" disabled>تقدم سنة واحدة</button>
+                <button id="reset-simulation-btn" class="secondary-btn" style="display: none;">إعادة تعيين</button>
+            </div>
 
-    <section id="simulation_results">
-        <div id="simulation_output">
-            <!-- Simulation results will be displayed here -->
-        </div>
-    </section>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h2>العام</h2>
+                    <p id="current-year">2024</p>
+                </div>
+                <div class="stat-card">
+                    <h2>مستوى تطور الذكاء الاصطناعي</h2>
+                    <p id="ai-level">بدائي</p>
+                </div>
+                <div class="stat-card">
+                    <h2>معدل البطالة</h2>
+                    <p id="unemployment-rate">5%</p>
+                </div>
+                <div class="stat-card">
+                    <h2>سعادة السكان</h2>
+                    <p id="happiness-level">مستقرة</p>
+                </div>
+            </div>
 
+            <div class="log-container">
+                <h3>سجل الأحداث</h3>
+                <ul id="event-log">
+                    <li>مرحباً بك في محاكي المستقبل. اضغط على "بدء المحاكاة" لتبدأ الرحلة.</li>
+                </ul>
+            </div>
+
+            <div class="jobs-display">
+                <div class="jobs-list-container">
+                    <h3>الوظائف المهددة بالانقراض</h3>
+                    <ul id="threatened-jobs-list">
+                        <!-- Job items will be dynamically inserted here -->
+                    </ul>
+                </div>
+                <div class="jobs-list-container">
+                    <h3>الوظائف الجديدة الناشئة</h3>
+                    <ul id="emerging-jobs-list">
+                        <li class="placeholder">سيتم الإعلان عن وظائف جديدة مع تطور التكنولوجيا...</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>تم التطوير بواسطة جول - مهندس برمجيات</p>
+        </footer>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

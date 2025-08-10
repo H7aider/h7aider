@@ -1,124 +1,221 @@
-// Global array to store job scenarios
-const jobScenarios = [
-    {
-        id: 'truck_driver',
-        displayName: 'Truck Driver',
-        riskLevel: 'High',
-        aiImpact: 'High risk of automation from self-driving technology, potentially reducing demand for human drivers for long-haul routes.',
-        emergingJobs: ['Logistics Coordinator for Autonomous Fleets', 'Remote Vehicle Operator', 'Drone Delivery Specialist', 'AI Maintenance Technician for Vehicles'],
-        challenges: ['Significant retraining needed for new roles', 'Regulatory hurdles for autonomous vehicles', 'Public acceptance of autonomous transport', 'Infrastructure for autonomous vehicle support']
-    },
-    {
-        id: 'software_developer',
-        displayName: 'Software Developer',
-        riskLevel: 'Medium',
-        aiImpact: 'AI tools can automate coding tasks, assist in debugging, and accelerate development cycles. The role will likely shift towards AI-assisted development, requiring new skills in AI integration and tool usage.',
-        emergingJobs: ['AI/ML Engineer', 'AI Tools Developer', 'Prompt Engineer', 'AI Ethics and Governance Specialist'],
-        challenges: ['Keeping up with rapidly evolving AI tools and techniques', 'Potential for job displacement in routine coding tasks', 'Ethical implications of AI software']
-    },
-    {
-        id: 'radiologist',
-        displayName: 'Radiologist',
-        riskLevel: 'Medium',
-        aiImpact: 'AI can assist in image analysis, potentially increasing accuracy and speed, but human oversight remains crucial. The role may evolve to focus on complex cases and AI tool management.',
-        emergingJobs: ['AI Imaging Specialist', 'Medical Data Scientist', 'Clinical AI Ethicist', 'Radiology AI System Validator'],
-        challenges: ['Need to learn and adapt to AI-assisted diagnostic tools', 'Ensuring data privacy and security of patient data with AI systems', 'Ethical considerations of AI in diagnosis', 'Integration of AI into existing clinical workflows']
-    },
-    {
-        id: 'retail_salesperson',
-        displayName: 'Retail Salesperson',
-        riskLevel: 'High',
-        aiImpact: 'AI-powered kiosks, chatbots, and automated checkout systems can handle many customer interactions and transactions. Roles may shift towards customer experience, complex problem-solving, and managing in-store technology.',
-        emergingJobs: ['Retail Tech Specialist', 'Customer Experience Concierge', 'E-commerce Integration Manager', 'Personalized Shopping AI Curator'],
-        challenges: ['Need for digital literacy and customer service skills', 'Reduced number of traditional cashier and floor staff roles', 'Adapting to AI-driven inventory and sales tools']
-    },
-    {
-        id: 'teacher_educator',
-        displayName: 'Teacher / Educator',
-        riskLevel: 'Low',
-        aiImpact: 'AI can personalize learning, automate grading, and provide administrative support. Teachers can focus more on mentorship, critical thinking skills, and socio-emotional learning, using AI as an assistant.',
-        emergingJobs: ['AI Curriculum Developer', 'Educational Technologist specializing in AI', 'Personalized Learning Facilitator', 'Data Analyst for Student Performance (AI-assisted)'],
-        challenges: ['Integrating AI tools effectively into pedagogy', 'Ensuring equitable access to AI learning tools', 'Ethical concerns around student data and AI bias', 'Training educators to use AI effectively']
-    }
-];
+// --- DOM ELEMENTS ---
+// We will get references to the HTML elements here to interact with them.
+document.addEventListener('DOMContentLoaded', () => {
 
-function populateJobOptions() {
-    const jobSelection = document.getElementById('job_selection');
-    if (!jobSelection) {
-        console.error("Job selection dropdown not found for populating!");
-        return;
-    }
+    const startBtn = document.getElementById('start-simulation-btn');
+    const advanceYearBtn = document.getElementById('advance-year-btn');
+    const resetBtn = document.getElementById('reset-simulation-btn');
 
-    jobSelection.innerHTML = ''; // Clear existing options
+    const currentYearEl = document.getElementById('current-year');
+    const aiLevelEl = document.getElementById('ai-level');
+    const unemploymentRateEl = document.getElementById('unemployment-rate');
+    const happinessLevelEl = document.getElementById('happiness-level');
+    const eventLogEl = document.getElementById('event-log');
+    const threatenedJobsListEl = document.getElementById('threatened-jobs-list');
 
-    jobScenarios.forEach(job => {
-        const option = document.createElement('option');
-        option.value = job.id;
-        option.textContent = job.displayName;
-        jobSelection.appendChild(option);
-    });
-}
+    // --- CONSTANTS ---
+    const INITIAL_JOBS = [
+        { name: 'سائق شاحنة', sector: 'النقل', automationRisk: 0.9, workforce: 4000000 },
+        { name: 'ممثل خدمة العملاء', sector: 'الخدمات', automationRisk: 0.8, workforce: 6000000 },
+        { name: 'محاسب', sector: 'المالية', automationRisk: 0.7, workforce: 3000000 },
+        { name: 'مطور برمجيات', sector: 'التكنولوجيا', automationRisk: 0.4, workforce: 2000000 },
+        { name: 'طبيب', sector: 'الرعاية الصحية', automationRisk: 0.2, workforce: 1500000 },
+        { name: 'معلم', sector: 'التعليم', automationRisk: 0.1, workforce: 5000000 },
+        { name: 'فنان', sector: 'الإبداع', automationRisk: 0.05, workforce: 1000000 },
+    ];
+    const MAX_AI_LEVEL = 100;
 
-function runSimulation() {
-    const jobSelection = document.getElementById('job_selection');
-    const simulationOutput = document.getElementById('simulation_output');
-
-    if (!jobSelection || !simulationOutput) {
-        console.error("Required elements (job selection or simulation output) not found.");
-        if (simulationOutput) {
-            simulationOutput.innerHTML = "Error: Essential page elements are missing.";
+    // --- RANDOM EVENTS ---
+    const RANDOM_EVENTS = [
+        {
+            description: "اختراق علمي كبير يسرّع من تطور الذكاء الاصطناعي!",
+            probability: 0.05,
+            trigger: (state) => state.aiLevel > 20 && state.aiLevel < 80,
+            effect: (state) => {
+                state.aiLevel += 10;
+                return state;
+            }
+        },
+        {
+            description: "ركود اقتصادي عالمي يؤدي إلى تباطؤ الاستثمار في التكنولوجيا.",
+            probability: 0.03,
+            trigger: (state) => state.year > 2030,
+            effect: (state) => {
+                state.aiLevel -= 5;
+                state.happiness -= 10;
+                return state;
+            }
+        },
+        {
+            description: "حركة مقاومة شعبية ضد الأتمتة تنجح في فرض قيود تنظيمية.",
+            probability: 0.07,
+            trigger: (state) => state.unemploymentRate > 15,
+            effect: (state) => {
+                // Slows down automation impact for a year by temporarily reducing risk
+                state.jobs.forEach(j => j.automationRisk *= 0.5);
+                logEvent("تأثير المقاومة الشعبية سيقلل من فقدان الوظائف لهذا العام.");
+                return state;
+            }
+        },
+        {
+            description: "الحكومة تطلق برنامج دعم ودخل أساسي شامل لمواجهة البطالة.",
+            probability: 0.1,
+            trigger: (state) => state.unemploymentRate > 20,
+            effect: (state) => {
+                state.happiness += 20;
+                state.unemploymentRate *= 0.9; // Simulate people being helped
+                return state;
+            }
         }
-        return;
+    ];
+
+    // --- SIMULATION STATE ---
+    let simulationState = {};
+
+    // Function to reset the state to its initial values
+    function initializeState() {
+        simulationState = {
+            year: 2024,
+            aiLevel: 1,
+            unemploymentRate: 5.0,
+            happiness: 95,
+            isStarted: false,
+            jobs: JSON.parse(JSON.stringify(INITIAL_JOBS)), // Deep copy
+            totalWorkforce: INITIAL_JOBS.reduce((sum, job) => sum + job.workforce, 0),
+            unemployed: (INITIAL_JOBS.reduce((sum, job) => sum + job.workforce, 0) * 0.05)
+        };
     }
 
-    const selectedJobId = jobSelection.value;
+    // --- FUNCTIONS ---
 
-    if (!selectedJobId) {
-        simulationOutput.innerHTML = "<p>Please select a job category to see the simulation.</p>";
-        return;
+    function logEvent(message, type = 'info') {
+        const li = document.createElement('li');
+        li.textContent = `[${simulationState.year}] ${message}`;
+        // Optional: Add classes for styling based on type (e.g., 'event-warning', 'event-critical')
+        eventLogEl.prepend(li);
     }
 
-    const selectedJob = jobScenarios.find(job => job.id === selectedJobId);
+    function getAiLevelName(level) {
+        if (level < 10) return "بدائي";
+        if (level < 30) return "مساعد";
+        if (level < 60) return "متقدم";
+        if (level < 90) return "شبه مستقل";
+        return "ذكاء فائق";
+    }
 
-    if (selectedJob) {
-        let emergingJobsHtml = '<ul>';
-        selectedJob.emergingJobs.forEach(job => {
-            emergingJobsHtml += `<li>${job}</li>`;
+    function getHappinessLevelName(happiness) {
+        if (happiness < 20) return "انهيار اجتماعي";
+        if (happiness < 40) return "غضب شديد";
+        if (happiness < 60) return "قلق وتوتر";
+        if (happiness < 80) return "حذر وترقب";
+        return "استقرار ورضا";
+    }
+
+    function updateJobDisplay() {
+        threatenedJobsListEl.innerHTML = ''; // Clear existing list
+
+        simulationState.jobs.forEach(job => {
+            const initialJob = INITIAL_JOBS.find(j => j.name === job.name);
+            const workforcePercentage = (job.workforce / initialJob.workforce) * 100;
+
+            let barColorClass = 'var(--success-color)';
+            if (workforcePercentage < 70) barColorClass = 'var(--warning-color)';
+            if (workforcePercentage < 40) barColorClass = 'var(--danger-color)';
+
+            const li = document.createElement('li');
+            li.classList.add('job-item');
+            li.innerHTML = `
+                <div class="job-name">${job.name}</div>
+                <div class="job-workforce">العاملون: ${Math.round(job.workforce).toLocaleString()}</div>
+                <div class="workforce-bar-container">
+                    <div class="workforce-bar" style="width: ${workforcePercentage}%; background-color: ${barColorClass};"></div>
+                </div>
+            `;
+            threatenedJobsListEl.appendChild(li);
         });
-        emergingJobsHtml += '</ul>';
+    }
 
-        let challengesHtml = '<ul>';
-        selectedJob.challenges.forEach(challenge => {
-            challengesHtml += `<li>${challenge}</li>`;
+    function updateUI() {
+        currentYearEl.textContent = simulationState.year;
+        unemploymentRateEl.textContent = `${simulationState.unemploymentRate.toFixed(1)}%`;
+        aiLevelEl.textContent = getAiLevelName(simulationState.aiLevel);
+        happinessLevelEl.textContent = getHappinessLevelName(simulationState.happiness);
+        updateJobDisplay();
+    }
+
+    function advanceOneYear() {
+        if (!simulationState.isStarted) return;
+
+        simulationState.year++;
+
+        // 1. AI Growth (S-curve-like growth)
+        const growthRate = 0.1 * (1 - simulationState.aiLevel / MAX_AI_LEVEL);
+        simulationState.aiLevel += simulationState.aiLevel * growthRate + 1;
+        simulationState.aiLevel = Math.min(simulationState.aiLevel, MAX_AI_LEVEL);
+        logEvent(`تطور الذكاء الاصطناعي إلى المستوى ${simulationState.aiLevel.toFixed(0)}.`);
+
+        // 2. Job Automation (Refined formula for more realistic progression)
+        let totalJobsLostThisYear = 0;
+        simulationState.jobs.forEach(job => {
+            const innovationFactor = (simulationState.aiLevel / MAX_AI_LEVEL);
+            // The exponent makes the job loss slow at first and accelerate dramatically later.
+            const jobsLost = job.workforce * Math.pow(job.automationRisk * innovationFactor, 2) * 0.2;
+
+            job.workforce -= jobsLost;
+            totalJobsLostThisYear += jobsLost;
         });
-        challengesHtml += '</ul>';
 
-        const riskClass = `risk-${selectedJob.riskLevel.toLowerCase()}`;
-        simulationOutput.innerHTML = `
-            <h2>${selectedJob.displayName} <span class="risk-level-display ${riskClass}">${selectedJob.riskLevel} Risk</span></h2>
-            <h3>AI Impact:</h3>
-            <p>${selectedJob.aiImpact}</p>
-            <h3>Potential Emerging Jobs:</h3>
-            ${emergingJobsHtml}
-            <h3>Challenges for the Workforce:</h3>
-            ${challengesHtml}
-        `;
-    } else {
-        simulationOutput.innerHTML = "<p>Error: Selected job details not found. Please try refreshing.</p>";
-        console.error("Selected job ID not found in jobScenarios: ", selectedJobId);
+        simulationState.unemployed += totalJobsLostThisYear;
+        const currentTotalWorkforce = simulationState.jobs.reduce((sum, job) => sum + job.workforce, 0);
+        simulationState.totalWorkforce = currentTotalWorkforce + simulationState.unemployed;
+        simulationState.unemploymentRate = (simulationState.unemployed / simulationState.totalWorkforce) * 100;
+
+        logEvent(`${Math.round(totalJobsLostThisYear).toLocaleString()} شخص فقدوا وظائفهم بسبب الأتمتة.`, 'warning');
+
+        // 3. Happiness update
+        simulationState.happiness -= simulationState.unemploymentRate * 0.2;
+        simulationState.happiness = Math.max(0, simulationState.happiness);
+
+        // 4. Check for Random Events
+        RANDOM_EVENTS.forEach(event => {
+            if (event.trigger(simulationState) && Math.random() < event.probability) {
+                logEvent(`حدث خاص: ${event.description}`, 'event');
+                simulationState = event.effect(simulationState);
+            }
+        });
+
+        updateUI();
     }
-}
 
-// Event listener will be added in a subsequent step
-// after the button is added to index.html.
+    function startSimulation() {
+        initializeState();
+        simulationState.isStarted = true;
+        startBtn.disabled = true;
+        advanceYearBtn.disabled = false;
+        resetBtn.style.display = 'inline-block';
 
-document.addEventListener('DOMContentLoaded', function() {
-    populateJobOptions(); // Populate jobs on load
-
-    const runButton = document.getElementById('run_button');
-    if (runButton) {
-        runButton.addEventListener('click', runSimulation);
-    } else {
-        console.error("Run button not found!");
+        logEvent("بدأت المحاكاة! تطور الذكاء الاصطناعي يبدأ الآن.");
+        updateUI();
     }
+
+    function resetSimulation() {
+        initializeState();
+        eventLogEl.innerHTML = '';
+        logEvent("تمت إعادة تعيين المحاكاة. يمكنك البدء من جديد.");
+
+        startBtn.disabled = false;
+        advanceYearBtn.disabled = true;
+        resetBtn.style.display = 'none';
+
+        updateUI();
+    }
+
+
+    // --- EVENT LISTENERS ---
+    startBtn.addEventListener('click', startSimulation);
+    advanceYearBtn.addEventListener('click', advanceOneYear);
+    resetBtn.addEventListener('click', resetSimulation);
+
+    // Initial log message
+    console.log("Simulation script loaded. Waiting for user to start.");
 });
