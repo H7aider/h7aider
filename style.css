@@ -1,91 +1,217 @@
-/* Basic styles for the body */
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+:root {
+    --primary-bg-color: #0d1117;
+    --secondary-bg-color: #161b22;
+    --border-color: #30363d;
+    --text-color: #c9d1d9;
+    --primary-accent-color: #58a6ff;
+    --secondary-accent-color: #1f6feb;
+    --danger-color: #f85149;
+    --warning-color: #e3b341;
+    --success-color: #3fb950;
 }
 
-/* Main header (h1) styling */
-h1 {
+body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+}
+
+header {
     text-align: center;
     margin-bottom: 30px;
-    color: #0056b3;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
 }
 
-/* User input section styling */
-#user_input {
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+header h1 {
+    color: var(--primary-accent-color);
+    margin: 0;
 }
 
-/* Simulation output div styling */
-#simulation_output {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-top: 20px;
-    min-height: 100px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+header p {
+    font-size: 1.1rem;
+    color: #8b949e; /* Lighter text color */
 }
 
-/* Styling for labels, select dropdowns, and buttons */
-label {
-    display: block; /* Makes the label take its own line */
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-select,
-button {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 1em;
+.controls {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 button {
-    background-color: #007bff;
+    background-color: var(--secondary-accent-color);
     color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-family: 'Tajawal', sans-serif;
+    border-radius: 6px;
     cursor: pointer;
-    border-color: #007bff;
+    transition: background-color 0.3s ease;
+    margin: 0 10px;
 }
 
-button:hover {
-    background-color: #0056b3;
+button:hover:not(:disabled) {
+    background-color: var(--primary-accent-color);
 }
 
-/* Ensure select takes up a reasonable width */
-select {
-    width: 100%;
-    max-width: 300px; /* Adjust as needed */
+button:disabled {
+    background-color: #21262d;
+    color: #8b949e;
+    cursor: not-allowed;
 }
 
-/* Risk level display styling */
-.risk-level-display {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-left: 10px; /* Spacing from the job title */
-    font-size: 0.9em;
+.secondary-btn {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+}
+
+.secondary-btn:hover {
+    background-color: var(--secondary-bg-color);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: var(--secondary-bg-color);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.stat-card h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: #8b949e;
+}
+
+.stat-card p {
+    margin-bottom: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-accent-color);
+}
+
+.log-container {
+    background-color: var(--secondary-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.log-container h3 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+#event-log {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 200px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+}
+
+#event-log li {
+    padding: 8px 0;
+    border-bottom: 1px solid #21262d;
+}
+
+#event-log li:last-child {
+    border-bottom: none;
+}
+
+.jobs-display {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.jobs-list-container {
+    flex: 1;
+    background-color: var(--secondary-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.jobs-list-container h3 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    color: var(--primary-accent-color);
+}
+
+.jobs-list-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.jobs-list-container li {
+    padding: 10px 0;
+    border-bottom: 1px solid #21262d;
+}
+
+.jobs-list-container li:last-child {
+    border-bottom: none;
+}
+
+.job-item .job-name {
     font-weight: bold;
-    color: white; /* Default text color for all risk spans */
 }
 
-.risk-high {
-    background-color: red;
+.job-item .job-workforce {
+    font-size: 0.9em;
+    color: #8b949e;
 }
 
-.risk-medium {
-    background-color: orange;
+.workforce-bar-container {
+    width: 100%;
+    background-color: #21262d;
+    border-radius: 4px;
+    height: 8px;
+    margin-top: 5px;
 }
 
-.risk-low {
-    background-color: green;
+.workforce-bar {
+    height: 100%;
+    background-color: var(--success-color);
+    border-radius: 4px;
+    transition: width 0.5s ease-in-out;
+}
+
+.placeholder {
+    color: #8b949e;
+    font-style: italic;
+}
+
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: #8b949e;
 }
